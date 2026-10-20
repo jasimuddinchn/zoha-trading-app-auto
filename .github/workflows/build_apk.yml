@@ -1,0 +1,150 @@
+name: Build APK and Update Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant Execute Permission for Gradlew
+        run: |
+          if [ -f "gradlew" ]; then
+            chmod +x gradlew
+          else
+            echo "Generating Gradle wrapper..."
+            gradle wrapper
+            chmod +x gradlew
+          fi
+
+      - name: Setup Environment Files
+        run: |
+          if [ ! -f ".env" ]; then
+            cp .env.example .env 2>/dev/null || touch .env
+          fi
+          if [ -f "debug.keystore.base64" ] && [ ! -f "debug.keystore" ]; then
+            base64 -d debug.keystore.base64 > debug.keystore
+          fi
+
+      - name: Setup Signing Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'android' }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'android' }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Decoding KEYSTORE_BASE64 secret into my-upload-key.jks..."
+            echo "$KEYSTORE_BASE64" | base64 --decode > my-upload-key.jks
+          elif [ ! -f "my-upload-key.jks" ]; then
+            echo "No custom keystore provided. Creating build signing keystore..."
+            keytool -genkey -v \
+              -keystore my-upload-key.jks \
+              -alias upload \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -storepass "$STORE_PASSWORD" \
+              -keypass "$KEY_PASSWORD" \
+              -dname "CN=ZohaTrading, OU=Mobile, O=Zoha, L=Dhaka, S=Dhaka, C=BD"
+          fi
+
+      - name: Extract App Version
+        id: app_version
+        run: |
+          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts || echo "1.0.3")
+          VERSION_CODE=$(grep -oP 'versionCode\s*=\s*\K[0-9]+' app/build.gradle.kts || echo "3")
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "Extracted Version Name: $VERSION_NAME"
+          echo "Extracted Version Code: $VERSION_CODE"
+
+      - name: Build Release APK
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'android' }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'android' }}
+        run: |
+          ./gradlew assembleRelease --stacktrace || ./gradlew assembleDebug --stacktrace
+
+      - name: Locate and Prepare Release APK
+        run: |
+          mkdir -p release-assets
+          APK_FILE=$(find app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -n 1)
+          if [ -z "$APK_FILE" ] || [ ! -f "$APK_FILE" ]; then
+            echo "Looking for debug APK fallback..."
+            APK_FILE=$(find app/build/outputs/apk/debug -name "*.apk" 2>/dev/null | head -n 1)
+          fi
+          
+          if [ -z "$APK_FILE" ] || [ ! -f "$APK_FILE" ]; then
+            echo "Error: No APK found in build outputs!"
+            exit 1
+          fi
+
+          echo "Found APK at: $APK_FILE"
+          # app-release.apk is the direct download file used by InAppUpdateManager
+          cp "$APK_FILE" release-assets/app-release.apk
+          # Version-named copy for release assets
+          cp "$APK_FILE" "release-assets/zoha-trading-v${{ steps.app_version.outputs.version_name }}.apk"
+          ls -la release-assets/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: release-assets/
+          retention-days: 14
+
+      - name: Create or Update Git Tag Automatically
+        run: |
+          TAG_NAME="v${{ steps.app_version.outputs.version_name }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f "$TAG_NAME"
+          git push -f origin "$TAG_NAME" || true
+
+      - name: Publish or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.app_version.outputs.version_name }}
+          name: "Release v${{ steps.app_version.outputs.version_name }}"
+          body: |
+            ### Automated Release v${{ steps.app_version.outputs.version_name }}
+            
+            - **Commit**: `${{ github.sha }}`
+            - **Branch**: `${{ github.ref_name }}`
+            - **Version Code**: `${{ steps.app_version.outputs.version_code }}`
+            - **Trigger**: Automatic push to `main` (no manual tag needed)
+            
+            #### Download
+            - **`app-release.apk`**: Used for in-app updates and direct installation
+            - **`zoha-trading-v${{ steps.app_version.outputs.version_name }}.apk`**: Version-tagged package
+          draft: false
+          prerelease: false
+          make_latest: true
+          files: |
+            release-assets/app-release.apk
+            release-assets/zoha-trading-v${{ steps.app_version.outputs.version_name }}.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
