@@ -20,9 +20,8 @@ enum class ConditionGrade(val labelBn: String, val labelEn: String) {
 
 val BRAND_OPTIONS = listOf(
     "Apple",
-    "iPhone",
     "Samsung",
-    "Google Pixel",
+    "Google",
     "Xiaomi",
     "Redmi",
     "OnePlus",
@@ -41,72 +40,74 @@ val BRAND_OPTIONS = listOf(
 
 val COMMON_PHONE_MODELS: Map<String, List<String>> = mapOf(
     "Apple" to listOf(
-        "16 Pro Max", "16 Pro", "16 Plus", "16",
-        "15 Pro Max", "15 Pro", "15 Plus", "15",
-        "14 Pro Max", "14 Pro", "14 Plus", "14",
-        "13 Pro Max", "13 Pro", "13", "13 mini",
-        "12 Pro Max", "12 Pro", "12", "12 mini",
-        "11 Pro Max", "11 Pro", "11",
-        "XS Max", "XS", "XR", "X",
-        "SE (3rd Gen)", "SE (2nd Gen)", "SE (1st Gen)",
-        "8 Plus", "8", "7 Plus", "7", "6s Plus", "6s", "6 Plus", "6",
+        "iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone 16 Plus", "iPhone 16",
+        "iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15",
+        "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14",
+        "iPhone 13 Pro Max", "iPhone 13 Pro", "iPhone 13", "iPhone 13 mini",
+        "iPhone 12 Pro Max", "iPhone 12 Pro", "iPhone 12", "iPhone 12 mini",
+        "iPhone 11 Pro Max", "iPhone 11 Pro", "iPhone 11",
+        "iPhone XS Max", "iPhone XS", "iPhone XR", "iPhone X",
+        "iPhone SE (3rd Gen)", "iPhone SE (2nd Gen)", "iPhone SE (1st Gen)",
+        "iPhone 8 Plus", "iPhone 8", "iPhone 7 Plus", "iPhone 7", "iPhone 6s Plus", "iPhone 6s", "iPhone 6 Plus", "iPhone 6",
         "iPad Pro 13 (M4)", "iPad Pro 11 (M4)", "iPad Pro 12.9", "iPad Pro 11",
         "iPad Air 13 (M2)", "iPad Air 11 (M2)", "iPad Air 5", "iPad Air 4",
-        "iPad 10th Gen", "iPad 9th Gen", "iPad mini 7 (A17 Pro)", "iPad mini 6"
+        "iPad 10th Gen", "iPad 9th Gen", "iPad mini 7", "iPad mini 6"
     ),
     "iPhone" to listOf(
-        "16 Pro Max", "16 Pro", "16 Plus", "16",
-        "15 Pro Max", "15 Pro", "15 Plus", "15",
-        "14 Pro Max", "14 Pro", "14 Plus", "14",
-        "13 Pro Max", "13 Pro", "13", "13 mini",
-        "12 Pro Max", "12 Pro", "12", "12 mini",
-        "11 Pro Max", "11 Pro", "11",
-        "XS Max", "XS", "XR", "X",
-        "SE (3rd Gen)", "SE (2nd Gen)", "SE (1st Gen)",
-        "8 Plus", "8", "7 Plus", "7", "6s Plus", "6s", "6 Plus", "6"
+        "iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone 16 Plus", "iPhone 16",
+        "iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15",
+        "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14",
+        "iPhone 13 Pro Max", "iPhone 13 Pro", "iPhone 13", "iPhone 13 mini",
+        "iPhone 12 Pro Max", "iPhone 12 Pro", "iPhone 12", "iPhone 12 mini",
+        "iPhone 11 Pro Max", "iPhone 11 Pro", "iPhone 11",
+        "iPhone XS Max", "iPhone XS", "iPhone XR", "iPhone X",
+        "iPhone SE (3rd Gen)", "iPhone SE (2nd Gen)", "iPhone SE (1st Gen)",
+        "iPhone 8 Plus", "iPhone 8", "iPhone 7 Plus", "iPhone 7", "iPhone 6s Plus", "iPhone 6s", "iPhone 6 Plus", "iPhone 6"
     ),
     "Samsung" to listOf(
-        "S25 Ultra", "S25+", "S25",
-        "S24 Ultra", "S24+", "S24", "S24 FE",
-        "S23 Ultra", "S23+", "S23", "S23 FE",
-        "S22 Ultra", "S22+", "S22",
-        "S21 Ultra", "S21+", "S21", "S21 FE",
-        "S20 Ultra", "S20+", "S20", "S20 FE",
-        "S10+", "S10", "S10e", "S10 Lite", "S9+", "S9",
-        "Note 20 Ultra 5G", "Note 20", "Note 10+", "Note 10", "Note 9", "Note 8",
-        "Z Fold 6", "Z Flip 6", "Z Fold 5", "Z Flip 5", "Z Fold 4", "Z Flip 4", "Z Fold 3", "Z Flip 3", "Z Fold 2", "Z Flip", "Fold",
-        "A55 5G", "A54 5G", "A53 5G", "A52s 5G", "A52 5G", "A52 4G", "A51", "A50",
-        "A35 5G", "A34 5G", "A33 5G", "A32 5G", "A32 4G", "A31", "A30",
-        "A25 5G", "A24 4G", "A23 5G", "A23 4G", "A22 5G", "A22 4G", "A21s", "A20",
-        "A16 5G", "A16 4G", "A15 5G", "A15 4G", "A14 5G", "A14 4G", "A13 5G", "A13 4G", "A12", "A11", "A10s",
-        "A06", "A05s", "A05", "A04s", "A04e", "A04", "A03s", "A03", "A02s",
-        "M55 5G", "M54 5G", "M53 5G", "M52 5G", "M35 5G", "M34 5G", "M33 5G", "M32", "M15 5G", "M14 5G", "M13", "M12",
-        "F55 5G", "F54 5G", "F34 5G", "F15 5G", "F14 5G",
-        "Tab S9 Ultra", "Tab S9+", "Tab S9", "Tab S9 FE+", "Tab S9 FE", "Tab S8 Ultra", "Tab S8+", "Tab S8", "Tab A9+", "Tab A9"
-    ),
-    "Google Pixel" to listOf(
-        "9 Pro Fold", "9 Pro XL", "9 Pro", "9",
-        "8a", "8 Pro", "8",
-        "7a", "7 Pro", "7",
-        "Fold",
-        "6a", "6 Pro", "6",
-        "5a 5G", "5",
-        "4a 5G", "4a", "4 XL", "4",
-        "3a XL", "3a", "3 XL", "3",
-        "2 XL", "2", "XL", "1",
-        "Tablet"
+        "Galaxy S25 Ultra", "Galaxy S25+", "Galaxy S25",
+        "Galaxy S24 Ultra", "Galaxy S24+", "Galaxy S24", "Galaxy S24 FE",
+        "Galaxy S23 Ultra", "Galaxy S23+", "Galaxy S23", "Galaxy S23 FE",
+        "Galaxy S22 Ultra", "Galaxy S22+", "Galaxy S22",
+        "Galaxy S21 Ultra", "Galaxy S21+", "Galaxy S21", "Galaxy S21 FE",
+        "Galaxy S20 Ultra", "Galaxy S20+", "Galaxy S20", "Galaxy S20 FE",
+        "Galaxy S10+", "Galaxy S10", "Galaxy S10e", "Galaxy S10 Lite", "Galaxy S9+", "Galaxy S9",
+        "Galaxy Note 20 Ultra 5G", "Galaxy Note 20", "Galaxy Note 10+", "Galaxy Note 10", "Galaxy Note 9", "Galaxy Note 8",
+        "Galaxy Z Fold 6", "Galaxy Z Flip 6", "Galaxy Z Fold 5", "Galaxy Z Flip 5", "Galaxy Z Fold 4", "Galaxy Z Flip 4", "Galaxy Z Fold 3", "Galaxy Z Flip 3", "Galaxy Z Fold 2", "Galaxy Z Flip", "Galaxy Fold",
+        "Galaxy A55 5G", "Galaxy A54 5G", "Galaxy A53 5G", "Galaxy A52s 5G", "Galaxy A52 5G", "Galaxy A52 4G", "Galaxy A51", "Galaxy A50",
+        "Galaxy A35 5G", "Galaxy A34 5G", "Galaxy A33 5G", "Galaxy A32 5G", "Galaxy A32 4G", "Galaxy A31", "Galaxy A30",
+        "Galaxy A25 5G", "Galaxy A24 4G", "Galaxy A23 5G", "Galaxy A23 4G", "Galaxy A22 5G", "Galaxy A22 4G", "Galaxy A21s", "Galaxy A20",
+        "Galaxy A16 5G", "Galaxy A16 4G", "Galaxy A15 5G", "Galaxy A15 4G", "Galaxy A14 5G", "Galaxy A14 4G", "Galaxy A13 5G", "Galaxy A13 4G", "Galaxy A12", "Galaxy A11", "Galaxy A10s",
+        "Galaxy A06", "Galaxy A05s", "Galaxy A05", "Galaxy A04s", "Galaxy A04e", "Galaxy A04", "Galaxy A03s", "Galaxy A03", "Galaxy A02s",
+        "Galaxy M55 5G", "Galaxy M54 5G", "Galaxy M53 5G", "Galaxy M52 5G", "Galaxy M35 5G", "Galaxy M34 5G", "Galaxy M33 5G", "Galaxy M32", "Galaxy M15 5G", "Galaxy M14 5G", "Galaxy M13", "Galaxy M12",
+        "Galaxy F55 5G", "Galaxy F54 5G", "Galaxy F34 5G", "Galaxy F15 5G", "Galaxy F14 5G",
+        "Galaxy Tab S9 Ultra", "Galaxy Tab S9+", "Galaxy Tab S9", "Galaxy Tab S9 FE+", "Galaxy Tab S9 FE", "Galaxy Tab S8 Ultra", "Galaxy Tab S8+", "Galaxy Tab S8", "Galaxy Tab A9+", "Galaxy Tab A9"
     ),
     "Google" to listOf(
-        "9 Pro Fold", "9 Pro XL", "9 Pro", "9",
-        "8a", "8 Pro", "8",
-        "7a", "7 Pro", "7",
-        "Fold",
-        "6a", "6 Pro", "6",
-        "5a 5G", "5",
-        "4a 5G", "4a", "4 XL", "4",
-        "3a XL", "3a", "3 XL", "3",
-        "2 XL", "2", "XL", "1",
-        "Tablet"
+        "Pixel 9 Pro Fold", "Pixel 9 Pro XL", "Pixel 9 Pro", "Pixel 9",
+        "Pixel 8a", "Pixel 8 Pro", "Pixel 8",
+        "Pixel 7A", "Pixel 7a", "Pixel 7 Pro", "Pixel 7",
+        "Pixel Fold",
+        "Pixel 6a", "Pixel 6 Pro", "Pixel 6",
+        "Pixel 5a 5G", "Pixel 5",
+        "Pixel 4a 5G", "Pixel 4a", "Pixel 4 XL", "Pixel 4",
+        "Pixel 3a XL", "Pixel 3a", "Pixel 3 XL", "Pixel 3",
+        "Pixel 2XL", "Pixel 2 XL", "Pixel 2",
+        "Pixel XL", "Pixel 1",
+        "Pixel Tablet"
+    ),
+    "Google Pixel" to listOf(
+        "Pixel 9 Pro Fold", "Pixel 9 Pro XL", "Pixel 9 Pro", "Pixel 9",
+        "Pixel 8a", "Pixel 8 Pro", "Pixel 8",
+        "Pixel 7A", "Pixel 7a", "Pixel 7 Pro", "Pixel 7",
+        "Pixel Fold",
+        "Pixel 6a", "Pixel 6 Pro", "Pixel 6",
+        "Pixel 5a 5G", "Pixel 5",
+        "Pixel 4a 5G", "Pixel 4a", "Pixel 4 XL", "Pixel 4",
+        "Pixel 3a XL", "Pixel 3a", "Pixel 3 XL", "Pixel 3",
+        "Pixel 2XL", "Pixel 2 XL", "Pixel 2",
+        "Pixel XL", "Pixel 1",
+        "Pixel Tablet"
     ),
     "Xiaomi" to listOf(
         "15 Ultra", "15 Pro", "15",
@@ -303,6 +304,10 @@ val DEFAULT_STORAGE_OPTIONS = listOf(
     "16-256GB",
     "16-512GB",
     "16-1TB",
+    "8-128GB",
+    "8-256GB",
+    "6-128GB",
+    "4-64GB",
     "Custom..."
 )
 
@@ -327,34 +332,37 @@ fun cleanModelForBrand(brand: String, model: String): String {
     if (b.isBlank() || m.isBlank()) return m
 
     // 1. Google Pixel / Pixel / Google
+    // Preserves "Pixel" prefix in models like "Pixel 8", "Pixel 2XL", "Pixel 7A"
     if (b.equals("Google Pixel", ignoreCase = true) || b.equals("Pixel", ignoreCase = true) || b.equals("Google", ignoreCase = true)) {
-        val prefixes = listOf("Google Pixel ", "Pixel ", "Google ")
-        for (prefix in prefixes) {
-            if (m.startsWith(prefix, ignoreCase = true)) {
-                m = m.substring(prefix.length).trim()
-            }
+        if (m.startsWith("Google Pixel ", ignoreCase = true)) {
+            m = m.substring("Google ".length).trim()
+        } else if (m.startsWith("Google ", ignoreCase = true)) {
+            val rest = m.substring("Google ".length).trim()
+            m = if (rest.startsWith("Pixel", ignoreCase = true)) rest else "Pixel $rest"
         }
         return m
     }
 
     // 2. Apple / iPhone
+    // Preserves "iPhone" prefix in models like "iPhone 12", "iPhone 13 Pro Max"
     if (b.equals("Apple", ignoreCase = true) || b.equals("iPhone", ignoreCase = true)) {
-        val prefixes = listOf("Apple iPhone ", "iPhone ", "Apple ")
-        for (prefix in prefixes) {
-            if (m.startsWith(prefix, ignoreCase = true)) {
-                m = m.substring(prefix.length).trim()
-            }
+        if (m.startsWith("Apple iPhone ", ignoreCase = true)) {
+            m = m.substring("Apple ".length).trim()
+        } else if (m.startsWith("Apple ", ignoreCase = true)) {
+            val rest = m.substring("Apple ".length).trim()
+            m = if (rest.startsWith("iPhone", ignoreCase = true) || rest.startsWith("iPad", ignoreCase = true)) rest else "iPhone $rest"
         }
         return m
     }
 
     // 3. Samsung
+    // Preserves "Galaxy" prefix in models like "Galaxy S24 Ultra", "Galaxy S25"
     if (b.equals("Samsung", ignoreCase = true) || b.equals("Galaxy", ignoreCase = true)) {
-        val prefixes = listOf("Samsung Galaxy ", "Galaxy ", "Samsung ")
-        for (prefix in prefixes) {
-            if (m.startsWith(prefix, ignoreCase = true)) {
-                m = m.substring(prefix.length).trim()
-            }
+        if (m.startsWith("Samsung Galaxy ", ignoreCase = true)) {
+            m = m.substring("Samsung ".length).trim()
+        } else if (m.startsWith("Samsung ", ignoreCase = true)) {
+            val rest = m.substring("Samsung ".length).trim()
+            m = if (rest.startsWith("Galaxy", ignoreCase = true)) rest else "Galaxy $rest"
         }
         return m
     }
@@ -402,6 +410,39 @@ fun formatDeviceDisplayName(brand: String, model: String): String {
     val m = cleanModelForBrand(b, model).trim()
     if (b.isBlank()) return m.ifBlank { "Phone" }
     if (m.isBlank()) return b
+
+    // 1. Apple / iPhone: If model has "iPhone" or "iPad", display model directly (e.g. "iPhone 13 Pro Max")
+    if (isAppleBrand(b)) {
+        return if (m.startsWith("iPhone", ignoreCase = true) || m.startsWith("iPad", ignoreCase = true)) {
+            m
+        } else {
+            "iPhone $m"
+        }
+    }
+
+    // 2. Google / Google Pixel: If brand is Google and model is "Pixel 8", show "Google Pixel 8"
+    if (b.equals("Google", ignoreCase = true) || b.equals("Google Pixel", ignoreCase = true) || b.equals("Pixel", ignoreCase = true)) {
+        return if (m.startsWith("Google", ignoreCase = true)) {
+            m
+        } else if (m.startsWith("Pixel", ignoreCase = true)) {
+            "Google $m"
+        } else {
+            "Google Pixel $m"
+        }
+    }
+
+    // 3. Samsung: If model starts with Samsung, display as is, otherwise prefix with Samsung
+    if (b.equals("Samsung", ignoreCase = true)) {
+        return if (m.startsWith("Samsung", ignoreCase = true)) {
+            m
+        } else {
+            "Samsung $m"
+        }
+    }
+
+    // Generic: If model already starts with brand name (e.g. "OnePlus 12"), avoid duplication
+    if (m.startsWith(b, ignoreCase = true)) return m
+
     return "$b $m"
 }
 

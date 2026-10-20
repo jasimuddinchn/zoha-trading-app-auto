@@ -74,12 +74,18 @@ jobs:
       - name: Extract App Version
         id: app_version
         run: |
-          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts || echo "1.0.3")
-          VERSION_CODE=$(grep -oP 'versionCode\s*=\s*\K[0-9]+' app/build.gradle.kts || echo "3")
+          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts || echo "1.0.4")
+          VERSION_CODE=$(grep -oP 'versionCode\s*=\s*\K[0-9]+' app/build.gradle.kts || echo "4")
+          TAG_NAME="v${VERSION_NAME}"
+          if [ -z "$TAG_NAME" ] || [ "$TAG_NAME" = "v" ]; then
+            TAG_NAME="v1.0.4"
+          fi
           echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
           echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
           echo "Extracted Version Name: $VERSION_NAME"
           echo "Extracted Version Code: $VERSION_CODE"
+          echo "Release Tag Name: $TAG_NAME"
 
       - name: Build Release APK
         env:
@@ -103,10 +109,11 @@ jobs:
           fi
 
           echo "Found APK at: $APK_FILE"
-          # app-release.apk is the direct download file used by InAppUpdateManager
+          # app-release.apk is the direct download file name required by InAppUpdateManager
+          # Direct URL: https://github.com/<owner>/<repo>/releases/latest/download/app-release.apk
           cp "$APK_FILE" release-assets/app-release.apk
           # Version-named copy for release assets
-          cp "$APK_FILE" "release-assets/zoha-trading-v${{ steps.app_version.outputs.version_name }}.apk"
+          cp "$APK_FILE" "release-assets/zoha-trading-${{ steps.app_version.outputs.tag_name }}.apk"
           ls -la release-assets/
 
       - name: Upload Artifact
@@ -118,33 +125,39 @@ jobs:
 
       - name: Create or Update Git Tag Automatically
         run: |
-          TAG_NAME="v${{ steps.app_version.outputs.version_name }}"
+          TAG_NAME="${{ steps.app_version.outputs.tag_name }}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Update version tag (e.g. v1.0.4)
           git tag -f "$TAG_NAME"
           git push -f origin "$TAG_NAME" || true
+          # Also update rolling 'latest' tag
+          git tag -f "latest"
+          git push -f origin "latest" || true
 
-      - name: Publish or Update GitHub Release
+      - name: Publish or Update GitHub Release (Named 'latest')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.app_version.outputs.version_name }}
-          name: "Release v${{ steps.app_version.outputs.version_name }}"
+          tag_name: ${{ steps.app_version.outputs.tag_name }}
+          name: "latest"
           body: |
-            ### Automated Release v${{ steps.app_version.outputs.version_name }}
+            ## Zoha Trading - Latest Release (${{ steps.app_version.outputs.tag_name }})
             
+            - **Release Name**: `latest`
+            - **Tag**: `${{ steps.app_version.outputs.tag_name }}`
+            - **Version**: `${{ steps.app_version.outputs.version_name }}` (Code: `${{ steps.app_version.outputs.version_code }}`)
             - **Commit**: `${{ github.sha }}`
             - **Branch**: `${{ github.ref_name }}`
-            - **Version Code**: `${{ steps.app_version.outputs.version_code }}`
-            - **Trigger**: Automatic push to `main` (no manual tag needed)
             
-            #### Download
-            - **`app-release.apk`**: Used for in-app updates and direct installation
-            - **`zoha-trading-v${{ steps.app_version.outputs.version_name }}.apk`**: Version-tagged package
+            ### Direct Download
+            Direct APK link for immediate download & in-app updates:
+            - [Download app-release.apk](https://github.com/${{ github.repository }}/releases/latest/download/app-release.apk)
+            - [Download zoha-trading-${{ steps.app_version.outputs.tag_name }}.apk](https://github.com/${{ github.repository }}/releases/download/${{ steps.app_version.outputs.tag_name }}/zoha-trading-${{ steps.app_version.outputs.tag_name }}.apk)
           draft: false
           prerelease: false
           make_latest: true
           files: |
             release-assets/app-release.apk
-            release-assets/zoha-trading-v${{ steps.app_version.outputs.version_name }}.apk
+            release-assets/zoha-trading-${{ steps.app_version.outputs.tag_name }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

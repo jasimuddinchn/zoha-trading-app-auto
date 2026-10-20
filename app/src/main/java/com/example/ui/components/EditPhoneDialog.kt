@@ -613,7 +613,7 @@ fun EditPhoneDialog(
                             value = model,
                             onValueChange = { model = it; errorMessage = null },
                             label = { Text("Phone Model *", maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp) },
-                            placeholder = { Text("e.g. 15 Pro or S24 Ultra", maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp) },
+                            placeholder = { Text("e.g. iPhone 13 Pro Max, Galaxy S24 Ultra, Pixel 8", maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp) },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = modelExpanded) },
                             singleLine = true,
                             textStyle = LocalTextStyle.current.copy(fontSize = 13.sp),

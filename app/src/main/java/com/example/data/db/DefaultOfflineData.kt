@@ -12,7 +12,7 @@ object DefaultOfflineData {
             PhoneItem(
                 id = 1L,
                 brand = "Apple",
-                model = "15 Pro Max",
+                model = "iPhone 15 Pro Max",
                 imei = "354892019482710",
                 imei2 = "354892019482711",
                 color = "Natural Titanium",
@@ -39,7 +39,7 @@ object DefaultOfflineData {
             PhoneItem(
                 id = 2L,
                 brand = "Apple",
-                model = "14 Pro",
+                model = "iPhone 14 Pro",
                 imei = "352948102948572",
                 imei2 = "352948102948573",
                 color = "Deep Purple",
@@ -66,7 +66,7 @@ object DefaultOfflineData {
             PhoneItem(
                 id = 3L,
                 brand = "Samsung",
-                model = "S24 Ultra",
+                model = "Galaxy S24 Ultra",
                 imei = "359182740192834",
                 imei2 = "359182740192835",
                 color = "Titanium Gray",
@@ -92,8 +92,8 @@ object DefaultOfflineData {
             ),
             PhoneItem(
                 id = 4L,
-                brand = "Google Pixel",
-                model = "8 Pro",
+                brand = "Google",
+                model = "Pixel 8 Pro",
                 imei = "358271039485721",
                 imei2 = "358271039485722",
                 color = "Bay Blue",
@@ -147,7 +147,7 @@ object DefaultOfflineData {
             PhoneItem(
                 id = 6L,
                 brand = "Apple",
-                model = "13",
+                model = "iPhone 13",
                 imei = "111111111111111",
                 imei2 = "111111111111112",
                 color = "Midnight",
@@ -181,7 +181,7 @@ object DefaultOfflineData {
             PhoneItem(
                 id = 7L,
                 brand = "Samsung",
-                model = "S23",
+                model = "Galaxy S23",
                 imei = "222222222222222",
                 imei2 = "222222222222223",
                 color = "Phantom Black",
@@ -214,8 +214,8 @@ object DefaultOfflineData {
             ),
             PhoneItem(
                 id = 8L,
-                brand = "Google Pixel",
-                model = "7 Pro",
+                brand = "Google",
+                model = "Pixel 7 Pro",
                 imei = "333333333333333",
                 imei2 = "333333333333334",
                 color = "Hazel",

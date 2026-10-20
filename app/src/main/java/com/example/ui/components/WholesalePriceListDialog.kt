@@ -671,7 +671,7 @@ fun WholesalePriceListDialog(
                                 isGeneratingPdf = true
                                 scope.launch {
                                     val pdfItems = selectedItems.map { state ->
-                                        val mobileName = "${state.phone.brand} ${state.phone.model}".trim()
+                                        val mobileName = formatDeviceDisplayName(state.phone.brand, state.phone.model)
                                         WholesalePdfItem(
                                             id = state.phone.id,
                                             brand = state.phone.brand.trim().ifBlank { "Other" },

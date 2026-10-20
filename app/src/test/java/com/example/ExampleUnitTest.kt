@@ -307,5 +307,41 @@ class ExampleUnitTest {
     assertTrue(com.example.util.InAppUpdateManager.compareVersionStrings("1.0.4", "1.0.3") > 0)
     assertTrue(com.example.util.InAppUpdateManager.compareVersionStrings("2.0.0", "1.0.3") > 0)
   }
+
+  @Test
+  fun testBrandAndModelPrefixOptions() {
+    // 1. BRAND_OPTIONS must contain "Apple", "Samsung", and "Google"
+    assertTrue(com.example.data.model.BRAND_OPTIONS.contains("Apple"))
+    assertTrue(com.example.data.model.BRAND_OPTIONS.contains("Samsung"))
+    assertTrue(com.example.data.model.BRAND_OPTIONS.contains("Google"))
+
+    // 2. Apple brand models must have "iPhone " prefix
+    val appleModels = com.example.data.model.getModelsForBrand("Apple")
+    assertTrue("Should contain iPhone 12", appleModels.contains("iPhone 12"))
+    assertTrue("Should contain iPhone 13 Pro Max", appleModels.contains("iPhone 13 Pro Max"))
+    assertTrue("Should contain iPhone 15 Pro Max", appleModels.contains("iPhone 15 Pro Max"))
+
+    // 3. Samsung brand models must have "Galaxy " prefix
+    val samsungModels = com.example.data.model.getModelsForBrand("Samsung")
+    assertTrue("Should contain Galaxy S24 Ultra", samsungModels.contains("Galaxy S24 Ultra"))
+    assertTrue("Should contain Galaxy S25", samsungModels.contains("Galaxy S25"))
+    assertTrue("Should contain Galaxy S23 Ultra", samsungModels.contains("Galaxy S23 Ultra"))
+
+    // 4. Google brand models must have "Pixel " prefix
+    val googleModels = com.example.data.model.getModelsForBrand("Google")
+    assertTrue("Should contain Pixel 8", googleModels.contains("Pixel 8"))
+    assertTrue("Should contain Pixel 2XL", googleModels.contains("Pixel 2XL"))
+    assertTrue("Should contain Pixel 7A", googleModels.contains("Pixel 7A"))
+
+    // 5. Normalization & Display format tests
+    assertEquals("iPhone 12", com.example.data.model.cleanModelForBrand("Apple", "Apple iPhone 12"))
+    assertEquals("iPhone 13 Pro Max", com.example.data.model.cleanModelForBrand("Apple", "iPhone 13 Pro Max"))
+    assertEquals("Galaxy S24 Ultra", com.example.data.model.cleanModelForBrand("Samsung", "Samsung Galaxy S24 Ultra"))
+    assertEquals("Pixel 8", com.example.data.model.cleanModelForBrand("Google", "Google Pixel 8"))
+
+    assertEquals("iPhone 12", com.example.data.model.formatDeviceDisplayName("Apple", "iPhone 12"))
+    assertEquals("Samsung Galaxy S24 Ultra", com.example.data.model.formatDeviceDisplayName("Samsung", "Galaxy S24 Ultra"))
+    assertEquals("Google Pixel 8", com.example.data.model.formatDeviceDisplayName("Google", "Pixel 8"))
+  }
 }
 

@@ -461,7 +461,7 @@ fun AddPhoneDialog(
                             errorMessage = null 
                         },
                         label = { Text("Phone Model *") },
-                        placeholder = { Text("e.g. 15 Pro Max or S24 Ultra") },
+                        placeholder = { Text("e.g. iPhone 13 Pro Max, Galaxy S24 Ultra, Pixel 8") },
                         singleLine = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = modelExpanded) },
                         colors = appTextFieldColors(),
