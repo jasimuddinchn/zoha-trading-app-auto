@@ -52,16 +52,19 @@ jobs:
       - name: Setup Signing Keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'android' }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'android' }}
+          STORE_PASSWORD_SECRET: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD_SECRET: ${{ secrets.KEY_PASSWORD }}
         run: |
+          STORE_PASSWORD="${STORE_PASSWORD_SECRET:-android}"
+          KEY_PASSWORD="${KEY_PASSWORD_SECRET:-android}"
+          
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "Decoding KEYSTORE_BASE64 secret into my-upload-key.jks..."
             echo "$KEYSTORE_BASE64" | base64 --decode > my-upload-key.jks
           elif [ ! -f "my-upload-key.jks" ]; then
-            echo "No custom keystore provided. Preparing signing keystore..."
+            echo "Preparing signing keystore with signature compatibility..."
             if [ -f "debug.keystore" ]; then
-              echo "Importing key from debug.keystore for studio build signature parity..."
+              echo "Importing key from debug.keystore for studio/USB build signature parity..."
               keytool -importkeystore \
                 -srckeystore debug.keystore \
                 -srcstorepass android \
@@ -70,16 +73,7 @@ jobs:
                 -destkeystore my-upload-key.jks \
                 -deststorepass "$STORE_PASSWORD" \
                 -destkeypass "$KEY_PASSWORD" \
-                -destalias upload -noprompt || \
-              keytool -genkey -v \
-                -keystore my-upload-key.jks \
-                -alias upload \
-                -keyalg RSA \
-                -keysize 2048 \
-                -validity 10000 \
-                -storepass "$STORE_PASSWORD" \
-                -keypass "$KEY_PASSWORD" \
-                -dname "CN=ZohaTrading, OU=Mobile, O=Zoha, L=Dhaka, S=Dhaka, C=BD"
+                -destalias upload -noprompt || cp debug.keystore my-upload-key.jks
             else
               keytool -genkey -v \
                 -keystore my-upload-key.jks \
@@ -109,12 +103,14 @@ jobs:
           echo "Extracted Version Code: $VERSION_CODE"
           echo "Release Tag Name: $TAG_NAME"
 
-      - name: Build Standard Release APK (No Shrink / Non-Minified)
+      - name: Build Standard Clean Release APK (Universal ABI, No Shrink)
         env:
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'android' }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'android' }}
+          STORE_PASSWORD_SECRET: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD_SECRET: ${{ secrets.KEY_PASSWORD }}
         run: |
-          ./gradlew assembleRelease --no-daemon --stacktrace || ./gradlew assembleDebug --no-daemon --stacktrace
+          export STORE_PASSWORD="${STORE_PASSWORD_SECRET:-android}"
+          export KEY_PASSWORD="${KEY_PASSWORD_SECRET:-android}"
+          ./gradlew clean assembleRelease --no-daemon --stacktrace || ./gradlew clean assembleDebug --no-daemon --stacktrace
 
       - name: Locate and Prepare Release APK
         run: |

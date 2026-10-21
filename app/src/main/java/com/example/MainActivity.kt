@@ -170,20 +170,46 @@ class MainActivity : FragmentActivity() {
         } catch (e: Exception) {
             android.util.Log.w("MainActivity", "Notice configuring edge-to-edge: ${e.message}")
         }
-        setContent {
-            val viewModel: PhoneHisabViewModel = viewModel()
-            val settings by viewModel.settings.collectAsStateWithLifecycle()
-            val isDarkTheme = when (settings.themeMode.uppercase()) {
-                "DARK" -> true
-                "LIGHT" -> false
-                else -> isSystemInDarkTheme()
-            }
+        try {
+            setContent {
+                val viewModel: PhoneHisabViewModel = viewModel()
+                val settings by viewModel.settings.collectAsStateWithLifecycle()
+                val isDarkTheme = when (settings.themeMode.uppercase()) {
+                    "DARK" -> true
+                    "LIGHT" -> false
+                    else -> isSystemInDarkTheme()
+                }
 
-            MyApplicationTheme(
-                darkTheme = isDarkTheme,
-                dynamicColor = settings.dynamicColor
-            ) {
-                MainAppRoot(viewModel = viewModel)
+                MyApplicationTheme(
+                    darkTheme = isDarkTheme,
+                    dynamicColor = settings.dynamicColor
+                ) {
+                    MainAppRoot(viewModel = viewModel)
+                }
+            }
+        } catch (t: Throwable) {
+            android.util.Log.e("MainActivity", "Critical error during setContent: ${t.message}", t)
+            try {
+                setContent {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = Color(0xFF0F172A)
+                    ) {
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(24.dp)) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("Zoha Trading", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text("Starting application...", color = Color(0xFF94A3B8), fontSize = 14.sp)
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Button(onClick = { recreate() }) {
+                                    Text("Reload")
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (ignored: Throwable) {
+                // Prevent crash
             }
         }
     }

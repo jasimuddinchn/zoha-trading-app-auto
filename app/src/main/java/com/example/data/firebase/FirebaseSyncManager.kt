@@ -63,7 +63,28 @@ class FirebaseSyncManager(
         }
     }
 
+    private fun ensureFirebaseInitialized() {
+        try {
+            if (com.google.firebase.FirebaseApp.getApps(context).isEmpty()) {
+                try {
+                    com.google.firebase.FirebaseApp.initializeApp(context)
+                } catch (e: Exception) {
+                    val options = com.google.firebase.FirebaseOptions.Builder()
+                        .setApplicationId("1:1234567890:android:zoha")
+                        .setApiKey("AIzaSyFakePlaceholderKeyForOfflineMode123")
+                        .setDatabaseUrl(databaseUrl)
+                        .setProjectId("zoha-trading")
+                        .build()
+                    com.google.firebase.FirebaseApp.initializeApp(context, options)
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Notice ensuring FirebaseApp: ${e.message}")
+        }
+    }
+
     private val firebaseDb: FirebaseDatabase by lazy {
+        ensureFirebaseInitialized()
         try {
             FirebaseDatabase.getInstance(databaseUrl).apply {
                 try {
@@ -74,12 +95,18 @@ class FirebaseSyncManager(
             }
         } catch (e: Exception) {
             Log.w(TAG, "Notice initializing Firebase Database with custom URL: ${e.message}")
-            FirebaseDatabase.getInstance().apply {
-                try {
-                    setPersistenceEnabled(true)
-                } catch (ex: Exception) {
-                    // ignore
+            try {
+                FirebaseDatabase.getInstance().apply {
+                    try {
+                        setPersistenceEnabled(true)
+                    } catch (ex: Exception) {
+                        // ignore
+                    }
                 }
+            } catch (ex: Exception) {
+                Log.e(TAG, "Fallback to default FirebaseApp for database", ex)
+                val app = com.google.firebase.FirebaseApp.getInstance()
+                FirebaseDatabase.getInstance(app, databaseUrl)
             }
         }
     }

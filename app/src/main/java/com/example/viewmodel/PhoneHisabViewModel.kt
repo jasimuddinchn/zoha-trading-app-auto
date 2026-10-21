@@ -61,11 +61,19 @@ class PhoneHisabViewModel(application: Application) : AndroidViewModel(applicati
 
     init {
         // Enforce clean session state on startup: user must log in afresh with profile PIN
-        SessionManager.clearSession(application)
+        try {
+            SessionManager.clearSession(application)
+        } catch (e: Exception) {
+            android.util.Log.w("PhoneHisabViewModel", "Notice clearing session: ${e.message}")
+        }
 
         val database = AppDatabase.getDatabase(application, viewModelScope)
         firebaseSyncManager = FirebaseSyncManager.getInstance(application, database, viewModelScope)
-        firebaseSyncManager.startRealtimeSync()
+        try {
+            firebaseSyncManager.startRealtimeSync()
+        } catch (e: Exception) {
+            android.util.Log.w("PhoneHisabViewModel", "Notice starting realtime sync: ${e.message}")
+        }
         stockRepository = StockRepository(database, firebaseSyncManager, viewModelScope)
         salesRepository = SalesRepository(database, firebaseSyncManager, viewModelScope)
         expenseRepository = ExpenseRepository(database, firebaseSyncManager, viewModelScope)
