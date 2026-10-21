@@ -165,7 +165,11 @@ sealed class NavTab(
 class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        try {
+            enableEdgeToEdge()
+        } catch (e: Exception) {
+            android.util.Log.w("MainActivity", "Notice configuring edge-to-edge: ${e.message}")
+        }
         setContent {
             val viewModel: PhoneHisabViewModel = viewModel()
             val settings by viewModel.settings.collectAsStateWithLifecycle()
@@ -186,7 +190,11 @@ class MainActivity : FragmentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        SessionManager.clearSession(this)
+        try {
+            SessionManager.clearSession(this)
+        } catch (e: Exception) {
+            // ignore
+        }
     }
 }
 

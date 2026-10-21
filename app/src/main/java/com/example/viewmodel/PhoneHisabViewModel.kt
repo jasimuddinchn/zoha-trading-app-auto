@@ -73,11 +73,15 @@ class PhoneHisabViewModel(application: Application) : AndroidViewModel(applicati
         
         // Proactively fetch latest cloud PINs & settings, and populate local Room DB from Firebase upon launch or reinstall
         viewModelScope.launch(Dispatchers.IO) {
-            firebaseSyncManager.fetchAndSyncCloudPinsAndSettings()
-            val phoneCount = database.phoneDao().getPhoneCount()
-            val expenseCount = database.expenseDao().getExpenseCount()
-            if (phoneCount == 0 || expenseCount == 0) {
-                firebaseSyncManager.pullAndPopulateAllFromCloud()
+            try {
+                firebaseSyncManager.fetchAndSyncCloudPinsAndSettings()
+                val phoneCount = database.phoneDao().getPhoneCount()
+                val expenseCount = database.expenseDao().getExpenseCount()
+                if (phoneCount == 0 || expenseCount == 0) {
+                    firebaseSyncManager.pullAndPopulateAllFromCloud()
+                }
+            } catch (e: Exception) {
+                android.util.Log.w("PhoneHisabViewModel", "Background sync notice on launch: ${e.message}")
             }
         }
     }
