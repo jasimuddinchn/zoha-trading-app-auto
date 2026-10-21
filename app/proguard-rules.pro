@@ -1,21 +1,49 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Disable R8/ProGuard shrinking, optimization, and obfuscation
+-dontshrink
+-dontoptimize
+-dontobfuscate
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Preserve attributes required for runtime reflection, Room, and Compose
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod,SourceFile,LineNumberTable
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Preserve all app classes, models, DAOs, and database
+-keep class com.example.** { *; }
+-keepclassmembers class com.example.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Preserve AndroidX, Lifecycle, ViewModel, Fragment, and Compose
+-keep class androidx.** { *; }
+-keepclassmembers class androidx.** { *; }
+
+# Preserve Room database and entities
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class * { *; }
+-keep @androidx.room.Dao interface * { *; }
+-keep class * implements androidx.room.RoomDatabase { *; }
+
+# Preserve Moshi JSON serialization
+-keep class com.squareup.moshi.** { *; }
+-keep @com.squareup.moshi.JsonQualifier interface * { *; }
+-keep @com.squareup.moshi.JsonClass class * { *; }
+-keepclassmembers class * {
+    @com.squareup.moshi.FromJson *;
+    @com.squareup.moshi.ToJson *;
+}
+
+# Preserve Firebase and Google Play Services
+-keep class com.google.firebase.** { *; }
+-keepclassmembers class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-keepclassmembers class com.google.android.gms.** { *; }
+
+# Preserve OkHttp and Retrofit
+-keep class okhttp3.** { *; }
+-keepclassmembers class okhttp3.** { *; }
+-keep class retrofit2.** { *; }
+-keepclassmembers class retrofit2.** { *; }
+
+# Preserve Kotlin Coroutines and Reflection
+-keep class kotlin.** { *; }
+-keep class kotlinx.coroutines.** { *; }
+
+# Suppress all warnings
+-dontwarn **

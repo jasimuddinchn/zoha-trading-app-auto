@@ -59,16 +59,38 @@ jobs:
             echo "Decoding KEYSTORE_BASE64 secret into my-upload-key.jks..."
             echo "$KEYSTORE_BASE64" | base64 --decode > my-upload-key.jks
           elif [ ! -f "my-upload-key.jks" ]; then
-            echo "No custom keystore provided. Creating build signing keystore..."
-            keytool -genkey -v \
-              -keystore my-upload-key.jks \
-              -alias upload \
-              -keyalg RSA \
-              -keysize 2048 \
-              -validity 10000 \
-              -storepass "$STORE_PASSWORD" \
-              -keypass "$KEY_PASSWORD" \
-              -dname "CN=ZohaTrading, OU=Mobile, O=Zoha, L=Dhaka, S=Dhaka, C=BD"
+            echo "No custom keystore provided. Preparing signing keystore..."
+            if [ -f "debug.keystore" ]; then
+              echo "Importing key from debug.keystore for studio build signature parity..."
+              keytool -importkeystore \
+                -srckeystore debug.keystore \
+                -srcstorepass android \
+                -srckeypass android \
+                -srcalias androiddebugkey \
+                -destkeystore my-upload-key.jks \
+                -deststorepass "$STORE_PASSWORD" \
+                -destkeypass "$KEY_PASSWORD" \
+                -destalias upload -noprompt || \
+              keytool -genkey -v \
+                -keystore my-upload-key.jks \
+                -alias upload \
+                -keyalg RSA \
+                -keysize 2048 \
+                -validity 10000 \
+                -storepass "$STORE_PASSWORD" \
+                -keypass "$KEY_PASSWORD" \
+                -dname "CN=ZohaTrading, OU=Mobile, O=Zoha, L=Dhaka, S=Dhaka, C=BD"
+            else
+              keytool -genkey -v \
+                -keystore my-upload-key.jks \
+                -alias upload \
+                -keyalg RSA \
+                -keysize 2048 \
+                -validity 10000 \
+                -storepass "$STORE_PASSWORD" \
+                -keypass "$KEY_PASSWORD" \
+                -dname "CN=ZohaTrading, OU=Mobile, O=Zoha, L=Dhaka, S=Dhaka, C=BD"
+            fi
           fi
 
       - name: Extract App Version
@@ -87,12 +109,12 @@ jobs:
           echo "Extracted Version Code: $VERSION_CODE"
           echo "Release Tag Name: $TAG_NAME"
 
-      - name: Build Release APK
+      - name: Build Standard Release APK (No Shrink / Non-Minified)
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'android' }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'android' }}
         run: |
-          ./gradlew assembleRelease --stacktrace || ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleRelease --no-daemon --stacktrace || ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Locate and Prepare Release APK
         run: |
